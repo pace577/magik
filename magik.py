@@ -26,8 +26,6 @@ Description:
     Open links with magik. Before using magik, make sure to set the variables
     at the beginning of the script to customize it to your needs.
 
-
-
 Commands:
     o, open    
         Opens the subject link. If LINK_TYPE is not given, it falls back to default value LIVE.
@@ -53,15 +51,20 @@ def get_link_type(link_type_arg):
     """Returns the sppropriate csv header for the link type (live
     lectures/recorded lecutures/assignments) from the argument provided to
     the command when executed"""
-    if link_type_arg in LINK_LIVE_ARGS_LIST:
-        return LIVE
-    elif link_type_arg in LINK_RECORDED_ARGS_LIST:
-        return RECORDED
-    elif link_type_arg in LINK_ASSIGNMENTS_ARGS_LIST:
-        return ASSIGNMENTS
-    else:
-        print("Link type not available!")
-        return -1
+    # if link_type_arg in LINK_LIVE_ARGS_LIST:
+    #     return LIVE
+    # elif link_type_arg in LINK_RECORDED_ARGS_LIST:
+    #     return RECORDED
+    # elif link_type_arg in LINK_ASSIGNMENTS_ARGS_LIST:
+    #     return ASSIGNMENTS
+    # else:
+    #     print("Link type not available!")
+    #     return -1
+    for i in range(len(LINK_TYPE_ARGS_LIST)):
+        if link_type_arg in LINK_TYPE_ARGS_LIST[i]:
+            return LINK_TYPE_LIST[i]
+    print("Subject not available in LINK_TYPE_ARGS_LIST!")
+    return -1
 
 
 def get_subject(subject_arg):
@@ -82,7 +85,7 @@ else:
     if command in ["open", "o"]:
         subject = get_subject(sys.argv[2])
         if len(sys.argv) == 3:
-            link_type = LIVE
+            link_type = LINK_TYPE_LIST[0]
         else:
             link_type = get_link_type(sys.argv[3])
         

@@ -31,24 +31,23 @@ You can use short commands to do the same thing, which can be customized in the 
 #+begin_src bash
 ./magik.py o ps live
 #+end_src
-The default value for the last argument is ~live~, so it can be skipped if desired.
+The default value for the last argument is ~live_lectures~ (in particular, it is the heading of the leftmost column containing links), so it can be skipped if desired.
 
 
 * Customizing
 You can customize a lot of variables in the ~vars.py~ file to suit your needs.
 
-| Variable Name              | Description                                                                                                                          |
-|----------------------------+--------------------------------------------------------------------------------------------------------------------------------------|
-| BROWSER                    | THe browser used to open links. Make sure this is the **same** as the browsers commandline utility                                     |
-| FILE                       | The CSV file read by the program. Contains all the links                                                                             |
-| SUBJECT                    | The CSV file heading for the subject column. Must be the same as in the CSV file.                                                    |
-| LIVE                       | The CSV file heading for the live_lectures column. Must be the same as in the CSV file.                                              |
-| RECORDED                   | The CSV file heading for the live_lectures column. Must be the same as in the CSV file.                                              |
-| ASSIGNMENTS                | The CSV file heading for the live_lectures column. Must be the same as in the CSV file.                                              |
-| SUBJECT_LIST               | List of subjects(rows) under the 'subject' column. Must be the same as in the CSV file.                                              |
-| SUBJECT_ARGS_LIST          | List of lists containing arguments that map to an item in SUBJECT_LIST. Customize this to use short arguments when running commands. |
-| LINK_LIVE_ARGS_LIST        | List of lists containing arguments that map to LIVE. Customize this to use short arguments when running commands.                    |
-| LINK_RECORDED_ARGS_LIST    | List of lists containing arguments that map to RECORDED. Customize this to use short arguments when running commands.                |
-| LINK_ASSIGNMENTS_ARGS_LIST | List of lists containing arguments that map to ASSIGNMENTS. Customize this to use short arguments when running commands.             |
+| Variable Name              | Description                                                                                                                            |
+|----------------------------+----------------------------------------------------------------------------------------------------------------------------------------|
+| BROWSER                    | THe browser used to open links. Make sure this is the **same** as the browsers commandline utility                                       |
+| FILE                       | The CSV file read by the program. Contains all the links                                                                               |
+| SUBJECT                    | The CSV file heading for the subject column. Must be the same as in the CSV file.                                                      |
+| LIVE                       | The CSV file heading for the live_lectures column. Must be the same as in the CSV file.                                                |
+| RECORDED                   | The CSV file heading for the live_lectures column. Must be the same as in the CSV file.                                                |
+| ASSIGNMENTS                | The CSV file heading for the live_lectures column. Must be the same as in the CSV file.                                                |
+| SUBJECT_LIST               | List of subjects(rows) under the 'subject' column. Must be the same as in the CSV file.                                                |
+| SUBJECT_ARGS_LIST          | List of lists containing arguments that map to an item in SUBJECT_LIST. Customize this to use short arguments when running commands.   |
+| LINK_TYPE_LIST             | List of link types (column headings) in the CSV file. Must be the same as in the CSV file.                                             |
+| LINK_TYPE_ARGS_LIST        | List of lists containing arguments that map to an item in LINK_TYPE_LIST. Customize this to use short arguments when running commands. |
 
 Also, consider placing a symlink for magik.py somewhere in your PATH, so you can execute it from anywhere.
