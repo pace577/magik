@@ -51,9 +51,9 @@ def open_link(subject, link_type):
 
 
 def get_link_type(link_type_arg):
-    """Returns the sppropriate csv header for the link type (live
-    lectures/recorded lecutures/assignments) from the argument provided to
-    the command when executed"""
+    """Returns the appropriate csv header for the intended link type (from
+    LINK_TYPE_LIST) by comparing the argument with all the items in
+    LINK_TYPE_ARGS_LIST"""
     for i in range(len(LINK_TYPE_ARGS_LIST)):
         if link_type_arg in LINK_TYPE_ARGS_LIST[i]:
             return LINK_TYPE_LIST[i]
@@ -62,8 +62,9 @@ def get_link_type(link_type_arg):
 
 
 def get_subject(subject_arg):
-    """Returns the sppropriate subject name from the argument provided to the
-    command when executed. Customize to your hearts content!"""
+    """Returns the appropriate csv header for the intended link type (from
+    SUBJECT_LIST) by comparing the argument with all the items in
+    SUBJECT_ARGS_LIST"""
     for i in range(len(SUBJECT_ARGS_LIST)):
         if subject_arg in SUBJECT_ARGS_LIST[i]:
             return SUBJECT_LIST[i]
