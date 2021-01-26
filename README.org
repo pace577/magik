@@ -12,10 +12,21 @@ Magik reads a CSV file that contains links corresponding to the subject name, an
 
 
 * How to use it
+** Creating and editing the CSV file
+First create a CSV file with the following command
+#+begin_src bash
+./magik.py init
+#+end_src
 
-First create a CSV file with all the links you have (You can use MS Excel or Libreoffice Calc to edit a spreadsheet and export it to a CSV file).
+You can edit and add links to the CSV file using an office tool like MS Excel or Libreoffice Calc.
 
-Consider the ~test.csv~ file for example. It has the following contents:
+Alternatively, you can use the ~set~ command. For example, if you want to set the link to subject ~math~ and link type ~lecture~ as https://youtube.com, then use the following command.
+#+begin_src bash
+./magik.py set math lecture https://youtube.com
+#+end_src
+
+** Opening links
+When the CSV file is ready, you can use ~magik~ to open a link immediately. Consider the ~test.csv~ file for example. It has the following contents:
 #+begin_src csv
 subject,live_lectures,recorded_lectures,assignments
 ps,https://archlinux.org,https://duckduckgo.com,https://wikipedia.org
