@@ -6,6 +6,5 @@ tmp/
 *.egg
 build
 htmlcov
-README.md
 .vscode
 __pycache__
