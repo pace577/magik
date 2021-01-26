@@ -8,34 +8,34 @@ All you need is a working python setup! And maybe an office utility like [[https
 
 
 * How it works
-Magik reads a CSV file that contains links corresponding to the subject name, and opens the link with a given browser. The `vars.py` file contains information about the column headings and rows, which can be customized according to your needs.
+Magik reads a CSV file that contains links corresponding to the subject name, and opens the link with a given browser. The ~vars.py~ file contains information about the column headings and rows, which can be customized according to your needs.
 
 
 * How to use it
 
 First create a CSV file with all the links you have (You can use MS Excel or Libreoffice Calc to edit a spreadsheet and export it to a CSV file).
 
-Consider the `test.csv` file for example. It has the following contents:
+Consider the ~test.csv~ file for example. It has the following contents:
 #+begin_src csv
 subject,live_lectures,recorded_lectures,assignments
 ps,https://archlinux.org,https://duckduckgo.com,https://wikipedia.org
 cv,https://duckduckgo.com,https://wikipedia.org,https://archlinux.org
 #+end_src
 
-To open the link corresponding to `ps` and `live_lectures`, use the following command while in the project directory:
+To open the link corresponding to ~ps~ and ~live_lectures~, use the following command while in the project directory:
 #+begin_src bash
 ./magik.py open ps live_lectures
 #+end_src
 
-You can use short commands to do the same thing, which can be customized in the `vars.py` file.
+You can use short commands to do the same thing, which can be customized in the ~vars.py~ file.
 #+begin_src bash
 ./magik.py o ps live
 #+end_src
-The default value for the last argument is `live`, so it can be skipped if desired.
+The default value for the last argument is ~live~, so it can be skipped if desired.
 
 
 * Customizing
-You can customize a lot of variables in the `vars.py` file to suit your needs.
+You can customize a lot of variables in the ~vars.py~ file to suit your needs.
 
 | Variable Name              | Description                                                                                                                          |
 |----------------------------+--------------------------------------------------------------------------------------------------------------------------------------|
