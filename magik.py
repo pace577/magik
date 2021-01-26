@@ -63,7 +63,10 @@ def open_link(subject, link_type):
             if row[SUBJECT] == subject:
                 if DEBUG:
                     print("Opening link with browser...")
-                os.system(BROWSER + " " + row[link_type]) #command to open the link
+                if row[link_type] == "":
+                    print("No link found")
+                else:
+                    os.system(BROWSER + " " + row[link_type]) #command to open the link
 
 
 def set_link(subject, link_type, link):
