@@ -1,7 +1,7 @@
 #+TITLE: Magik - A simple python utility to open links
 #+AUTHOR: pace577
 
-Magik lets you quickly open links using a simple command. This is primarily for all those students who struggle to open and manage links to lectures/course material on a regular basis, however anyone's free to modify and use it!
+Magik lets you quickly open links using a simple command. You can also run it with a timetable, and it will open links by itself. This is primarily for all those students who struggle to open and manage links to lectures/course material on a regular basis, however anyone's free to modify and use it!
 
 * Dependencies
 All you need is a working python setup! And maybe an office utility like [[https://www.libreoffice.org/discover/calc/][Libreoffice Calc]] to edit csv files, to maintain sanity.
