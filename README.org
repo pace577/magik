@@ -26,39 +26,69 @@ Alternatively, you can use the ~set~ command. For example, if you want to set th
 #+end_src
 
 ** Opening links
-When the CSV file is ready, you can use ~magik~ to open a link immediately. Consider the ~test.csv~ file for example. It has the following contents:
+When the CSV file is ready, you can use ~magik~ to open a link immediately. Consider the ~links.csv~ file for example. It has the following contents:
 #+begin_src csv
 subject,live_lectures,recorded_lectures,assignments
-ps,https://archlinux.org,https://duckduckgo.com,https://wikipedia.org
-cv,https://duckduckgo.com,https://wikipedia.org,https://archlinux.org
+ps,https:archlinux.org https://duckduckgo.com,https:archlinux.org,https:archlinux.org
+cv,https:archlinux.org,https:archlinux.org,https:archlinux.org
+math,https:archlinux.org,https:archlinux.org,https:archlinux.org
 #+end_src
 
 To open the link corresponding to ~ps~ and ~live_lectures~, use the following command while in the project directory:
 #+begin_src bash
-./magik.py open ps live_lectures
+./magik.py open cv live_lectures
 #+end_src
 
 You can use short commands to do the same thing, which can be customized in the ~vars.py~ file.
 #+begin_src bash
-./magik.py o ps live
+./magik.py o cv live
 #+end_src
 The default value for the last argument is ~live_lectures~ (in particular, it is the heading of the leftmost column containing links), so it can be skipped if desired.
+
+Note that the ~live_lectures~ column in ~ps~ row has 2 space separated links. You can open the desired link by specifying the link number using a '-'. For example, if you want to open the 1st link for ~ps~:
+#+begin_src csv
+./magik.py o ps-1 live
+#+end_src
+
+
+
+** Watch mode
+Magik can read a timetable and open links by itself at a set time. If you know at what times in the future you have to open a link, Magik can open it without you having to explicitly run it every time you need to open a link.
+
+You can set your timetable in the ~times.csv~ file. An example is as follows
+#+begin_src csv
+Day,09:00,10:00,11:00,12:00
+Mon,cv,math,ps-2,cv
+Tue,math,cv,ps-1,ps-1
+Wed,math,cv,ps-2,cv
+Thu,cv,math,ps-1,cv
+Fri,cv,math,math,cv
+#+end_src
+The subject names must be the same as in the first column of ~links.csv~.
+
+Start watch mode with the following. Kill the program to exit it.
+#+begin_src bash
+./magik.py watch
+#+end_src
+
+Consider creating a Systemd service for Magik for autostarting it every time you boot your device.
 
 
 * Customizing
 You can customize a lot of variables in the ~vars.py~ file to suit your needs.
 
-| Variable Name              | Description                                                                                                                            |
-|----------------------------+----------------------------------------------------------------------------------------------------------------------------------------|
-| BROWSER                    | THe browser used to open links. Make sure this is the **same** as the browsers commandline utility                                       |
-| FILE                       | The CSV file read by the program. Contains all the links                                                                               |
-| SUBJECT                    | The CSV file heading for the subject column. Must be the same as in the CSV file.                                                      |
-| LIVE                       | The CSV file heading for the live_lectures column. Must be the same as in the CSV file.                                                |
-| RECORDED                   | The CSV file heading for the live_lectures column. Must be the same as in the CSV file.                                                |
-| ASSIGNMENTS                | The CSV file heading for the live_lectures column. Must be the same as in the CSV file.                                                |
-| SUBJECT_LIST               | List of subjects(rows) under the 'subject' column. Must be the same as in the CSV file.                                                |
-| SUBJECT_ARGS_LIST          | List of lists containing arguments that map to an item in SUBJECT_LIST. Customize this to use short arguments when running commands.   |
-| LINK_TYPE_LIST             | List of link types (column headings) in the CSV file. Must be the same as in the CSV file.                                             |
-| LINK_TYPE_ARGS_LIST        | List of lists containing arguments that map to an item in LINK_TYPE_LIST. Customize this to use short arguments when running commands. |
+| Variable Name       | Description                                                                                                                            |
+|---------------------+----------------------------------------------------------------------------------------------------------------------------------------|
+| BROWSER             | THe browser used to open links. Make sure this is the **same** as the browsers commandline utility                                       |
+| LINK_FILE           | The CSV file that contains all the links read by the program.                                                                          |
+| TIME_FILE           | The CSV file that contains the times read by the program. These times correspond to a subject in LINK_FILE.                            |
+| SUBJECT             | The CSV file heading for the subject column in ~LINK_FILE~. Used to create the ~LINK_FILE~ file with ~magik init~                            |
+| DAY                 | The CSV file heading for the subject column in ~TIME_FILE~. Used to create the ~TIME_FILE~ file with ~magik init~.                           |
+| SUBJECT_LIST        | List of subjects(rows) under the 'subject' column. Must be the same as in the CSV file.                                                |
+| SUBJECT_ARGS_LIST   | List of lists containing arguments that map to an item in SUBJECT_LIST. Customize this to use short arguments when running commands.   |
+| LINK_TYPE_LIST      | List of link types (column headings) in the CSV file. Must be the same as in the CSV file. Used in ~LINK_FILE~.                          |
+| LINK_TYPE_ARGS_LIST | List of lists containing arguments that map to an item in LINK_TYPE_LIST. Customize this to use short arguments when running commands. |
+| TIME_LIST           | List of time slots for the timetable (column headings) in ~TIME_FILE~                                                                    |
+| DAY_LIST            | List of days for the timetable (row headings) in ~TIME_FILE~                                                                             |
 
 Also, consider placing a symlink for magik.py somewhere in your PATH, so you can execute it from anywhere.
