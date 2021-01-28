@@ -8,3 +8,5 @@ build
 htmlcov
 .vscode
 __pycache__
+*.orig
+todo.org

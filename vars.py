@@ -1,34 +1,37 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+
 
 ## Customization variables
 
 BROWSER = "firefox" # used to execute shell command to open links
 LINK_FILE = "links.csv"
 TIME_FILE = "times.csv"
-# TIME_FORMAT = "%a %R"
 
-# csv file headings. change these or change the csv file headings to make things work
-SUBJECT = "subject" #first column heading
-DAY = "Day"
+# CSV file headings for first row, first column. Used to create new csv file. If
+# a CSV file already exists, these strings must match headings in those files.
+SUBJECT = "subject" # For LINK_FILE
+DAY = "Day" # For TIME_FILE
 
-# Link types (CSV file headings for columns containing links)
+# Link types (LINK_FILE headings for columns containing links)
 LINK_TYPE_LIST = ["live_lectures", "recorded_lectures", "assignments"]
 LINK_TYPE_ARGS_LIST = [["live_lectures", "lecture", "live", "l", "zoom"],
                        ["recorded_lectures", "recorded", "r"],
                        ["assignments", "assignment", "a"]]
 
-# Subject names (CSV file first column rows)
+# Subject names (LINK_FILE first column rows)
 SUBJECT_LIST = ["ps", "cv", "math"] #must match the entry in csv file
 SUBJECT_ARGS_LIST = [["ps", "PS"], ["cv", "CV"], ["math", "MATH"]] #can enter any of these in the command line
 
-# Time slots
+# Time slots (For TIME_FILE)
 TIME_LIST = ["09:00","10:00","11:00","12:00","14:00","17:10","17:11","17:12"]
 DAY_LIST = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 
+# Magik opens the link EARLY seconds prior to the event time
+EARLY = 300
 
 ## Other
 
-DEBUG = False
+DEBUG = True
 
 ## Help text
 USAGE_TEXT = """

@@ -79,7 +79,7 @@ You can customize a lot of variables in the ~vars.py~ file to suit your needs.
 
 | Variable Name       | Description                                                                                                                            |
 |---------------------+----------------------------------------------------------------------------------------------------------------------------------------|
-| BROWSER             | THe browser used to open links. Make sure this is the **same** as the browsers commandline utility                                       |
+| BROWSER             | The browser used to open links. Make sure this is the **same** as the browsers commandline utility                                       |
 | LINK_FILE           | The CSV file that contains all the links read by the program.                                                                          |
 | TIME_FILE           | The CSV file that contains the times read by the program. These times correspond to a subject in LINK_FILE.                            |
 | SUBJECT             | The CSV file heading for the subject column in ~LINK_FILE~. Used to create the ~LINK_FILE~ file with ~magik init~                            |
@@ -88,7 +88,8 @@ You can customize a lot of variables in the ~vars.py~ file to suit your needs.
 | SUBJECT_ARGS_LIST   | List of lists containing arguments that map to an item in SUBJECT_LIST. Customize this to use short arguments when running commands.   |
 | LINK_TYPE_LIST      | List of link types (column headings) in the CSV file. Must be the same as in the CSV file. Used in ~LINK_FILE~.                          |
 | LINK_TYPE_ARGS_LIST | List of lists containing arguments that map to an item in LINK_TYPE_LIST. Customize this to use short arguments when running commands. |
-| TIME_LIST           | List of time slots for the timetable (column headings) in ~TIME_FILE~                                                                    |
-| DAY_LIST            | List of days for the timetable (row headings) in ~TIME_FILE~                                                                             |
+| TIME_LIST           | For watch mode. List of time slots for the timetable (column headings) in ~TIME_FILE~                                                    |
+| DAY_LIST            | For watch mode. List of days for the timetable (row headings) in ~TIME_FILE~                                                             |
+| EARLY               | For watch mode. Magik will open the link EARLY seconds before the next event time, as given in ~TIME_FILE~                               |
 
 Also, consider placing a symlink for magik.py somewhere in your PATH, so you can execute it from anywhere.
