@@ -31,7 +31,7 @@ EARLY = 300
 
 ## Other
 
-DEBUG = True
+DEBUG = False
 
 ## Help text
 USAGE_TEXT = """
