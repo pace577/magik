@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 import time
 import csv
@@ -180,6 +181,15 @@ def get_waiting_time(event_time):
     elif waiting_days < 0:
         waiting_days += 7
     waiting_seconds += waiting_days*24*3600
+
+    # open the link EARLY seconds before wait time
+    if waiting_seconds - EARLY <= 0:
+        waiting_seconds = 1
+        if DEBUG:
+            print("get_waiting_time: No more time. Starting now!")
+    else:
+        waiting_seconds -= EARLY
+
     if DEBUG:
         print("get_waiting_time: Must wait a total of {} seconds".format(waiting_seconds))
 
