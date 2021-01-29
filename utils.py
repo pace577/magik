@@ -122,11 +122,19 @@ def open_next_link():
             print("open_next_link: The next event is on", next_event_time)
         for row in reader:
             if row[DAY] == next_event_time[0]:
-                time.sleep(get_waiting_time(next_event_time))
-                subject, link_index = check_multiple_links(row[next_event_time[1]])
-                open_link(subject, LINK_TYPE_LIST[0], link_index)
-                if DEBUG:
-                    print("open_next_link: open_link() finished")
+                waiting_time, is_late = get_waiting_time(next_event_time)
+                if is_late:
+                    subject, link_index = check_multiple_links(row[next_event_time[1]])
+                    open_link(subject, LINK_TYPE_LIST[0], link_index)
+                    if DEBUG:
+                        print(f"open_next_link: event is_late. Opened link, will wait for {waiting_time} seconds now.")
+                    time.sleep(waiting_time)
+                else:
+                    time.sleep(waiting_time)
+                    subject, link_index = check_multiple_links(row[next_event_time[1]])
+                    open_link(subject, LINK_TYPE_LIST[0], link_index)
+                    if DEBUG:
+                        print("open_next_link: open_link() finished")
 
 
 def get_next_event_time():
@@ -162,6 +170,7 @@ def get_waiting_time(event_time):
     """Returns waiting time in seconds. Input (event_time) is a list or tuple of
     time format ["%a","%R"]"""
     waiting_seconds = 0
+    is_late = False
     current_time = time.strftime("%a %R").split()
     week_numbers = {"Mon":1, "Tue":2, "Wed":3, "Thu":4, "Fri":5}
 
@@ -184,7 +193,8 @@ def get_waiting_time(event_time):
 
     # open the link EARLY seconds before wait time
     if waiting_seconds - EARLY <= 0:
-        waiting_seconds = 1
+        #waiting_seconds = 1
+        is_late = True
         if DEBUG:
             print("get_waiting_time: No more time. Starting now!")
     else:
@@ -193,4 +203,4 @@ def get_waiting_time(event_time):
     if DEBUG:
         print("get_waiting_time: Must wait a total of {} seconds".format(waiting_seconds))
 
-    return waiting_seconds
+    return waiting_seconds, is_late
