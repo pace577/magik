@@ -7,7 +7,7 @@ from vars import *  # Contains customization variables
 
 ## Code
 
-def parse_time_slot_entry(subject_arg):
+def parse_time_slot_entry(subject_arg: str) -> (str, int):
     """Parses subject_arg and checks if a link index was provided."""
     if "-" in subject_arg:
         if DEBUG:
@@ -16,10 +16,10 @@ def parse_time_slot_entry(subject_arg):
         link_index = int(subject_arg[1])-1
         subject_arg = str(subject_arg[0])
         return subject_arg, link_index
-    return subject_arg, None
+    return (subject_arg, None)
 
 
-def open_link(subject, link_type, link_index=None):
+def open_link(subject: str, link_type: str, link_index: int = None):
     """Opens the link provided in the csv file using the appropriate heading.
     Change the BROWSER variable if the default browser doesn't work for
     you"""
@@ -39,7 +39,7 @@ def open_link(subject, link_type, link_index=None):
                     os.system(BROWSER + " " + row[link_type].split()[link_index])
 
 
-def set_link(subject, link_type, link):
+def set_link(subject: str, link_type: str, link: str):
     """Opens the link provided in the csv file using the appropriate heading.
     Change the BROWSER variable if the default browser doesn't work for
     you"""
@@ -60,7 +60,7 @@ def set_link(subject, link_type, link):
         print("Wrote item to new file!")
 
 
-def get_link_type(link_type_arg):
+def get_link_type(link_type_arg: str) -> str:
     """Returns the appropriate csv header for the intended link type (from
     LINK_TYPE_LIST) by comparing the argument with all the items in
     LINK_TYPE_ARGS_LIST"""
@@ -68,10 +68,10 @@ def get_link_type(link_type_arg):
         if link_type_arg in LINK_TYPE_ARGS_LIST[i]:
             return LINK_TYPE_LIST[i]
     print("Subject not available in LINK_TYPE_ARGS_LIST!")
-    return -1
+    return None
 
 
-def get_subject(subject_arg):
+def get_subject(subject_arg: str):
     """Returns the appropriate csv header for the intended link type (from
     SUBJECT_LIST) by comparing the argument with all the items in
     SUBJECT_ARGS_LIST"""
@@ -79,11 +79,11 @@ def get_subject(subject_arg):
         if subject_arg in SUBJECT_ARGS_LIST[i]:
             return SUBJECT_LIST[i]
     print("Subject not available in SUBJECT_ARGS_LIST!")
-    return -1
+    return None
 
 
-def create_csv_file(file_name, file_type="link"):
-    """Creates the CSV file that magik fetches the data from"""
+def create_csv_file(file_name: str, file_type: str = "link"):
+    """Creates LINK_FILE and TIME_FILE that magik fetches the data from."""
     if not os.path.exists(file_name):
         if file_type == "link":
             with open(file_name, "w") as f:
@@ -114,7 +114,7 @@ def create_csv_file(file_name, file_type="link"):
 
 #         return times
 
-def read_time_file_entry(event_time):
+def read_time_file_entry(event_time: DateType) -> str:
     """Reads TIME_FILE and outputs the slot contents corresponding to the given
     event_time. Input is a list in the format ["%a","%R"]."""
     with open(TIME_FILE, 'r') as f:
@@ -147,7 +147,7 @@ def open_next_link():
             print("open_next_link: open_link() finished")
 
 
-def get_next_event_time_from_given_time(given_time):
+def get_next_event_time_from_given_time(given_time: DateType) -> DateType:
     """Returns next event time from given time. Reads only TIME_LIST, does not
     read TIME_FILE .Given time input format is ["%a","%R"]"""
     given_day = given_time[0]
@@ -158,11 +158,11 @@ def get_next_event_time_from_given_time(given_time):
             entry_hour, entry_minute = map(int, time_entry.split(":"))
             if entry_hour > given_hour:
                 if DEBUG:
-                    print(f"get_next_event_time_from_given_time:{given_time} The event might today!")
+                    print(f"get_next_event_time_from_given_time: {given_time} The event might be today!")
                 return [given_day, time_entry]
             elif entry_hour == given_hour and entry_minute > given_minute:
                 if DEBUG:
-                    print(f"get_next_event_time_from_given_time:{given_time} The event might within an hour!")
+                    print(f"get_next_event_time_from_given_time: {given_time} The event might within an hour!")
                 return [given_day, time_entry]
             elif entry_hour == given_hour and entry_minute == given_minute:
                 time_index = TIME_LIST.index(time_entry)
@@ -172,22 +172,22 @@ def get_next_event_time_from_given_time(given_time):
                     # day_index = DAY_LIST.index(given_day)+1
                 # else:
                     if DEBUG:
-                        print(f"get_next_event_time_from_given_time{given_time}: A probable event just passed! There might be another event today.")
+                        print(f"get_next_event_time_from_given_time: {given_time} A probable event just passed! There might be another event today.")
                     return [given_day, TIME_LIST[time_index+1]]
         # else
         day_index = DAY_LIST.index(given_day)
         if day_index >= len(DAY_LIST)-1:
             if DEBUG:
-                print(f"get_next_event_time_from_given_time{given_time}: We probably reached the weekend!")
+                print(f"get_next_event_time_from_given_time: {given_time} We probably reached the weekend!")
             return [DAY_LIST[0], TIME_LIST[0]]
         else:
             if DEBUG:
-                print(f"get_next_event_time_from_given_time{given_time}: The event might be tomorrow!")
+                print(f"get_next_event_time_from_given_time: {given_time} The event might be tomorrow!")
             return [DAY_LIST[day_index+1], TIME_LIST[0]]
     else:
         return [DAY_LIST[0], TIME_LIST[0]]
 
-def get_next_event_time():
+def get_next_event_time() -> DateType:
     """Returns the time for next event, in the list with date format ["%a","%R"]"""
     current_time = time.strftime("%a %R").split()
     next_event_time = get_next_event_time_from_given_time(current_time)
@@ -199,9 +199,10 @@ def get_next_event_time():
 
 
 
-def get_waiting_time(event_time):
-    """Returns waiting time in seconds. Input (event_time) is a list or tuple of
-    time format ["%a","%R"]"""
+def get_waiting_time(event_time: DateType) -> (int, bool):
+    """Returns waiting time in seconds, and a boolean value is_late. is_late is
+    True if the next event is less than EARLY seconds from now. Input
+    (event_time) is DateType, which is a list of time format ["%a","%R"]"""
     waiting_seconds = 0
     is_late = False
     current_time = time.strftime("%a %R").split()
@@ -236,4 +237,4 @@ def get_waiting_time(event_time):
     if DEBUG:
         print("get_waiting_time: Must wait a total of {} seconds".format(waiting_seconds))
 
-    return waiting_seconds, is_late
+    return (waiting_seconds, is_late)

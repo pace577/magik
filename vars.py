@@ -29,9 +29,11 @@ DAY_LIST = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 # Magik opens the link EARLY seconds prior to the event time
 EARLY = 300
 
+
 ## Other
 
-DEBUG = False
+DEBUG = True
+DateType = list[str, str] #type alias
 
 ## Help text
 USAGE_TEXT = """
