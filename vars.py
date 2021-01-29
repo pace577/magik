@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import platform
 
 ## Customization variables
 
@@ -34,6 +35,12 @@ EARLY = 300
 
 DEBUG = True
 DateType = list[str, str] #type alias
+
+# Use start to run commands from windows console
+if platform.system() == "Windows":
+    BROWSER_COMMAND = "start "+BROWSER
+else:
+    BROWSER_COMMAND = BROWSER
 
 ## Help text
 USAGE_TEXT = """

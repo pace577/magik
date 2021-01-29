@@ -13,7 +13,9 @@ Magik reads a CSV file that contains links corresponding to the subject name, an
 
 * How to use it
 ** Creating and editing the CSV file
-First change the /Customization variables/ provided in ~vars.py~ according to your needs. Important variables are =SUBJECT_LIST= and =SUBJECT_ARGS_LIST= for magik to work. If using watch mode (which is probably why you would want to use Magik), set the =TIME_LIST= and =DAY_LIST= variables to set your timetable accordingly.
+First change the /Customization variables/ provided in ~vars.py~ according to your needs. Change the =BROWSER= variable to "chrome" if you are using the Google Chrome browser.
+
+Other important variables are =SUBJECT_LIST= and =SUBJECT_ARGS_LIST= for magik to work. If using watch mode (which is probably why you would want to use Magik), set the =TIME_LIST= and =DAY_LIST= variables to set your timetable accordingly.
 
 Then the following command will create CSV files with names given by =LINK_FILE= and =TIME_FILE= in ~vars.py~, according to your /Customization Variables/ set in the same file.
 #+begin_src bash

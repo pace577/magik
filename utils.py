@@ -32,11 +32,11 @@ def open_link(subject: str, link_type: str, link_index: int = None):
                 if link_index is None:
                     if DEBUG:
                         print("open_link: Opening link with browser...")
-                    os.system(BROWSER + " " + row[link_type]) #command to open the link
+                    os.system(BROWSER_COMMAND + " " + row[link_type]) #command to open the link
                 else:
                     if DEBUG:
                         print("open_link: Opening link {} with browser...".format(str(link_index)))
-                    os.system(BROWSER + " " + row[link_type].split()[link_index])
+                    os.system(BROWSER_COMMAND + " " + row[link_type].split()[link_index])
 
 
 def set_link(subject: str, link_type: str, link: str):
