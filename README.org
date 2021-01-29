@@ -21,7 +21,7 @@ Then the following command will create CSV files with names given by =LINK_FILE=
 #+end_src
 
 - =LINK_FILE= contains all your links, arranged in a table. Each row corresponds to a subject (math, science, etc) and each column corresponds to a link type (link to attend live lectures, link to view recorded lectures, etc)
-- =TIME_FILE= contains the timetable. Each row corresponds to a day, and columns correspond to a time (in HH:MM format). You must put subject names (as given in the first column of =LINK_FILE=) in the appropriate time slots. Magik will open the link for that subject, that are in the second column of =LINK_FILE=. To know more, read [[*Watch mode]]
+- =TIME_FILE= contains the timetable. Each row corresponds to a day, and columns correspond to a time (in HH:MM format). You must put subject names (as given in the first column of =LINK_FILE=) in the appropriate time slots. Magik will open the link for that subject, that are in the second column of =LINK_FILE=. To know more, read [[Watch mode]]
 
 You can edit and add links to =LINK_FILE= and subject names to =TIME_FILE= using an office tool like Libreoffice Calc or MS Excel.
 
@@ -29,6 +29,31 @@ Alternatively, you can use the ~set~ command to add links to =LINK_FILE=. For ex
 #+begin_src bash
 ./magik.py set math lecture https://youtube.com
 #+end_src
+
+
+** Watch mode
+Magik can read a timetable and open links by itself at a set time. The links opened correspond to the second column of the specified subject, as given in =LINK_FILE=. If you know at what times in the future you have to open a link, Magik can open it without you having to explicitly run it every time you need to open a link.
+
+You can set your timetable in the ~times.csv~ file. An example is as follows
+#+begin_src csv
+Day,09:00,10:00,11:00,12:00
+Mon,cv,math,ps-2,cv
+Tue,math,cv,ps-1,ps-1
+Wed,math,cv,ps-2,cv
+Thu,cv,math,ps-1,cv
+Fri,cv,math,math,cv
+#+end_src
+The subject names must be the same as in the first column of ~links.csv~.
+
+As previously mentioned, Magik supports multiple links. Put space separated links in the second column of =LINK_FILE= and mention the link you want to open in =<subject>-<link_number>= format in =TIME_FILE=.
+
+Start watch mode with the following. Kill the program to exit it.
+#+begin_src bash
+./magik.py watch
+#+end_src
+
+Consider creating a Systemd service for Magik for autostarting it every time you boot your device.
+
 
 ** Opening links
 When the CSV file is ready, you can use ~magik~ to open a link immediately. Consider the ~links.csv~ file for example. It has the following contents:
@@ -55,30 +80,6 @@ Note that the ~live_lectures~ column in ~ps~ row has 2 space separated links. Yo
 ./magik.py o ps-1 live
 #+end_src
 
-
-
-** Watch mode
-Magik can read a timetable and open links by itself at a set time. The links opened correspond to the second column of the specified subject, as given in =LINK_FILE=. If you know at what times in the future you have to open a link, Magik can open it without you having to explicitly run it every time you need to open a link.
-
-You can set your timetable in the ~times.csv~ file. An example is as follows
-#+begin_src csv
-Day,09:00,10:00,11:00,12:00
-Mon,cv,math,ps-2,cv
-Tue,math,cv,ps-1,ps-1
-Wed,math,cv,ps-2,cv
-Thu,cv,math,ps-1,cv
-Fri,cv,math,math,cv
-#+end_src
-The subject names must be the same as in the first column of ~links.csv~.
-
-As previously mentioned, Magik supports multiple links. Put space separated links in the second column of =LINK_FILE= and mention the link you want to open in =<subject>-<link_number>= format in =TIME_FILE=.
-
-Start watch mode with the following. Kill the program to exit it.
-#+begin_src bash
-./magik.py watch
-#+end_src
-
-Consider creating a Systemd service for Magik for autostarting it every time you boot your device.
 
 
 * Customizing
