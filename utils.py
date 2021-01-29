@@ -7,8 +7,8 @@ from vars import *  # Contains customization variables
 
 ## Code
 
-def check_multiple_links(subject_arg):
-    """Parses subject_arg and checks if a link index was provided"""
+def parse_time_slot_entry(subject_arg):
+    """Parses subject_arg and checks if a link index was provided."""
     if "-" in subject_arg:
         if DEBUG:
             print("Multiple Links Present")
@@ -17,6 +17,7 @@ def check_multiple_links(subject_arg):
         subject_arg = str(subject_arg[0])
         return subject_arg, link_index
     return subject_arg, None
+
 
 def open_link(subject, link_type, link_index=None):
     """Opens the link provided in the csv file using the appropriate heading.
@@ -57,6 +58,7 @@ def set_link(subject, link_type, link):
     nf.close()
     if DEBUG:
         print("Wrote item to new file!")
+
 
 def get_link_type(link_type_arg):
     """Returns the appropriate csv header for the intended link type (from
@@ -112,58 +114,89 @@ def create_csv_file(file_name, file_type="link"):
 
 #         return times
 
-def open_next_link():
-    """Checks what the next event in line is, waits until it's time for the
-    event and opens the link after waiting."""
+def read_time_file_entry(event_time):
+    """Reads TIME_FILE and outputs the slot contents corresponding to the given
+    event_time. Input is a list in the format ["%a","%R"]."""
     with open(TIME_FILE, 'r') as f:
         reader = list(csv.DictReader(f))
-        next_event_time = get_next_event_time()
-        if DEBUG:
-            print("open_next_link: The next event is on", next_event_time)
         for row in reader:
-            if row[DAY] == next_event_time[0]:
-                waiting_time, is_late = get_waiting_time(next_event_time)
-                if is_late:
-                    subject, link_index = check_multiple_links(row[next_event_time[1]])
-                    open_link(subject, LINK_TYPE_LIST[0], link_index)
-                    if DEBUG:
-                        print(f"open_next_link: event is_late. Opened link, will wait for {waiting_time} seconds now.")
-                    time.sleep(waiting_time)
-                else:
-                    time.sleep(waiting_time)
-                    subject, link_index = check_multiple_links(row[next_event_time[1]])
-                    open_link(subject, LINK_TYPE_LIST[0], link_index)
-                    if DEBUG:
-                        print("open_next_link: open_link() finished")
+            if row[DAY] == event_time[0]:
+                return row[event_time[1]]
 
 
-def get_next_event_time():
-    """Returns the time for next event, in the list with date format ["%a","%R"]"""
-    current_day = time.strftime("%a")
-    current_hour = int(time.strftime("%H"))
-    current_minute = int(time.strftime("%M"))
+def open_next_link():
+    """Checks what the next event is in TIME_FILE, waits until it's time for the
+    event and opens the link after waiting."""
+    next_event_time = get_next_event_time()
+    if DEBUG:
+        print("open_next_link: The next event is on", next_event_time)
+    waiting_time, is_late = get_waiting_time(next_event_time)
+    time_file_entry = read_time_file_entry(next_event_time)
+    if DEBUG and time_file_entry == "":
+        print("time_file_entry is blank!")
+    subject, link_index = parse_time_slot_entry(time_file_entry)
+    if is_late:
+        open_link(subject, LINK_TYPE_LIST[0], link_index)
+        if DEBUG:
+            print(f"open_next_link: event is_late. Opened link, will wait for {waiting_time} seconds now.")
+        time.sleep(waiting_time)
+    else:
+        time.sleep(waiting_time)
+        open_link(subject, LINK_TYPE_LIST[0], link_index)
+        if DEBUG:
+            print("open_next_link: open_link() finished")
 
-    if current_day in DAY_LIST:
+
+def get_next_event_time_from_given_time(given_time):
+    """Returns next event time from given time. Reads only TIME_LIST, does not
+    read TIME_FILE .Given time input format is ["%a","%R"]"""
+    given_day = given_time[0]
+    given_hour, given_minute = map(int, given_time[1].split(":"))
+
+    if given_day in DAY_LIST:
         for time_entry in TIME_LIST:
-            hour, minute = map(int, time_entry.split(":"))
-            if hour > current_hour:
+            entry_hour, entry_minute = map(int, time_entry.split(":"))
+            if entry_hour > given_hour:
                 if DEBUG:
-                    print("get_next_event_time: The event is today!")
-                return [current_day, time_entry]
-            if hour == current_hour and minute > current_minute:
+                    print(f"get_next_event_time_from_given_time:{given_time} The event might today!")
+                return [given_day, time_entry]
+            elif entry_hour == given_hour and entry_minute > given_minute:
                 if DEBUG:
-                    print("get_next_event_time: The event is within an hour!")
-                return [current_day, time_entry]
+                    print(f"get_next_event_time_from_given_time:{given_time} The event might within an hour!")
+                return [given_day, time_entry]
+            elif entry_hour == given_hour and entry_minute == given_minute:
+                time_index = TIME_LIST.index(time_entry)
+                if time_index < len(TIME_LIST)-1:
+                    # if DEBUG:
+                    #     print("get_next_event_time_from_given_time: The event might've just passed! Next event might be tomorrow.")
+                    # day_index = DAY_LIST.index(given_day)+1
+                # else:
+                    if DEBUG:
+                        print(f"get_next_event_time_from_given_time{given_time}: A probable event just passed! There might be another event today.")
+                    return [given_day, TIME_LIST[time_index+1]]
         # else
-        day_index = DAY_LIST.index(current_day)
-        if day_index == len(DAY_LIST)-1:
+        day_index = DAY_LIST.index(given_day)
+        if day_index >= len(DAY_LIST)-1:
+            if DEBUG:
+                print(f"get_next_event_time_from_given_time{given_time}: We probably reached the weekend!")
             return [DAY_LIST[0], TIME_LIST[0]]
         else:
             if DEBUG:
-                print("get_next_event_time: The event is tomorrow!")
+                print(f"get_next_event_time_from_given_time{given_time}: The event might be tomorrow!")
             return [DAY_LIST[day_index+1], TIME_LIST[0]]
     else:
         return [DAY_LIST[0], TIME_LIST[0]]
+
+def get_next_event_time():
+    """Returns the time for next event, in the list with date format ["%a","%R"]"""
+    current_time = time.strftime("%a %R").split()
+    next_event_time = get_next_event_time_from_given_time(current_time)
+    next_event_time_entry = read_time_file_entry(next_event_time)
+    while next_event_time_entry == "":
+        next_event_time = get_next_event_time_from_given_time(next_event_time)
+        next_event_time_entry = read_time_file_entry(next_event_time)
+    return next_event_time
+
 
 
 def get_waiting_time(event_time):
