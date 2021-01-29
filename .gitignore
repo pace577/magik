@@ -10,3 +10,4 @@ htmlcov
 __pycache__
 *.orig
 todo.org
+sample_*
