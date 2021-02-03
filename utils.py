@@ -104,16 +104,6 @@ def create_csv_file(file_name: str, file_type: str = "link"):
         print(file_name, "already exists. Skipping creating a new file.")
 
 
-# def get_latest_time():
-#     current_time = time.strftime(TIME_FORMAT).split()
-#     with open(TIME_FILE, 'r') as f:
-#         reader = list(csv.reader(f, delimiter=','))
-#         times = [item for row in reader[1:] for item in row[1:]]
-#         latest_time = times[0]
-#         # for row in reader:
-
-#         return times
-
 def read_time_file_entry(event_time: DateType) -> str:
     """Reads TIME_FILE and outputs the slot contents corresponding to the given
     event_time. Input is a list in the format ["%a","%R"]."""
@@ -124,76 +114,116 @@ def read_time_file_entry(event_time: DateType) -> str:
                 return row[event_time[1]]
 
 
-def open_next_link():
+def watch_mode():
     """Checks what the next event is in TIME_FILE, waits until it's time for the
     event and opens the link after waiting."""
-    next_event_time = get_next_event_time()
+    try:
+        while True:
+            next_event_time = get_event_time()
+            if DEBUG:
+                print("watch_mode: The next event is on", next_event_time)
+            waiting_time, is_late = get_waiting_time(next_event_time)
+            time_file_entry = read_time_file_entry(next_event_time)
+            if DEBUG and time_file_entry == "":
+                print("watch_mode: time_file_entry is blank!")
+            subject, link_index = parse_time_slot_entry(time_file_entry)
+            if is_late:
+                open_link(subject, LINK_TYPE_LIST[0], link_index)
+                if DEBUG:
+                    print(f"watch_mode: event is_late. Opened link, will wait for {waiting_time} seconds now.")
+                time.sleep(waiting_time)
+            else:
+                time.sleep(waiting_time)
+                open_link(subject, LINK_TYPE_LIST[0], link_index)
+                if DEBUG:
+                    print("watch_mode: open_link() finished")
+    except KeyboardInterrupt as e:
+        print("Exiting watch mode {}".format(str(e)))
+
+
+def open_event_link(reverse_time: bool = False):
+    """Checks what the next event is in TIME_FILE, waits until it's time for the
+    event and opens the link after waiting."""
+    next_event_time = get_event_time(reverse_time)
     if DEBUG:
-        print("open_next_link: The next event is on", next_event_time)
-    waiting_time, is_late = get_waiting_time(next_event_time)
+        if reverse_time:
+            print("open_event_link: Will open the next event from now")
+        else:
+            print("open_event_link: Will open the previous event from now")
+        print("open_event_link: The next event is on", next_event_time)
     time_file_entry = read_time_file_entry(next_event_time)
     if DEBUG and time_file_entry == "":
-        print("time_file_entry is blank!")
+        print("open_event_link: time_file_entry is blank!")
+
     subject, link_index = parse_time_slot_entry(time_file_entry)
-    if is_late:
-        open_link(subject, LINK_TYPE_LIST[0], link_index)
-        if DEBUG:
-            print(f"open_next_link: event is_late. Opened link, will wait for {waiting_time} seconds now.")
-        time.sleep(waiting_time)
+    if DEBUG:
+        print("open_event_link: Opening link...")
+    open_link(subject, LINK_TYPE_LIST[0], link_index)
+
+
+def compare_times(entry_time: int, given_time: int, reverse_time: bool = False) -> bool:
+    """Used in get_event_time_from_given_time() to make it work with reverse_time=False.
+    It compares given times. Returns True if:
+    - reverse_time is True and entry_time>given_time
+    - reverse_time is False and entry_time<given_time"""
+    if reverse_time:
+        return entry_time < given_time
     else:
-        time.sleep(waiting_time)
-        open_link(subject, LINK_TYPE_LIST[0], link_index)
-        if DEBUG:
-            print("open_next_link: open_link() finished")
+        return entry_time > given_time
 
 
-def get_next_event_time_from_given_time(given_time: DateType) -> DateType:
+def get_event_time_from_given_time(given_time: DateType, reverse_time: bool = False) -> DateType:
     """Returns next event time from given time. Reads only TIME_LIST, does not
     read TIME_FILE .Given time input format is ["%a","%R"]"""
+    global DAY_LIST, TIME_LIST
     given_day = given_time[0]
     given_hour, given_minute = map(int, given_time[1].split(":"))
+    if reverse_time:
+        DAY_LIST = DAY_LIST[::-1]
+        TIME_LIST = TIME_LIST[::-1]
 
     if given_day in DAY_LIST:
         for time_entry in TIME_LIST:
             entry_hour, entry_minute = map(int, time_entry.split(":"))
-            if entry_hour > given_hour:
+            if compare_times(entry_hour, given_hour, reverse_time):
                 if DEBUG:
-                    print(f"get_next_event_time_from_given_time: {given_time} The event might be today!")
+                    print(f"get_event_time_from_given_time: {given_time} The event might be today!")
                 return [given_day, time_entry]
-            elif entry_hour == given_hour and entry_minute > given_minute:
+            elif entry_hour == given_hour and compare_times(entry_minute, given_minute, reverse_time):
                 if DEBUG:
-                    print(f"get_next_event_time_from_given_time: {given_time} The event might within an hour!")
+                    print(f"get_event_time_from_given_time: {given_time} The event might within an hour!")
                 return [given_day, time_entry]
             elif entry_hour == given_hour and entry_minute == given_minute:
                 time_index = TIME_LIST.index(time_entry)
                 if time_index < len(TIME_LIST)-1:
                     # if DEBUG:
-                    #     print("get_next_event_time_from_given_time: The event might've just passed! Next event might be tomorrow.")
+                    #     print("get_event_time_from_given_time: The event might've just passed! Next event might be tomorrow.")
                     # day_index = DAY_LIST.index(given_day)+1
                 # else:
                     if DEBUG:
-                        print(f"get_next_event_time_from_given_time: {given_time} A probable event just passed! There might be another event today.")
+                        print(f"get_event_time_from_given_time: {given_time} A probable event just passed! There might be another event today.")
                     return [given_day, TIME_LIST[time_index+1]]
         # else
         day_index = DAY_LIST.index(given_day)
         if day_index >= len(DAY_LIST)-1:
             if DEBUG:
-                print(f"get_next_event_time_from_given_time: {given_time} We probably reached the weekend!")
+                print(f"get_event_time_from_given_time: {given_time} We probably reached the weekend!")
             return [DAY_LIST[0], TIME_LIST[0]]
         else:
             if DEBUG:
-                print(f"get_next_event_time_from_given_time: {given_time} The event might be tomorrow!")
+                print(f"get_event_time_from_given_time: {given_time} The event might be tomorrow!")
             return [DAY_LIST[day_index+1], TIME_LIST[0]]
     else:
         return [DAY_LIST[0], TIME_LIST[0]]
 
-def get_next_event_time() -> DateType:
+
+def get_event_time(reverse_time: bool = False) -> DateType:
     """Returns the time for next event, in the list with date format ["%a","%R"]"""
     current_time = time.strftime("%a %R").split()
-    next_event_time = get_next_event_time_from_given_time(current_time)
+    next_event_time = get_event_time_from_given_time(current_time, reverse_time)
     next_event_time_entry = read_time_file_entry(next_event_time)
     while next_event_time_entry == "":
-        next_event_time = get_next_event_time_from_given_time(next_event_time)
+        next_event_time = get_event_time_from_given_time(next_event_time, reverse_time)
         next_event_time_entry = read_time_file_entry(next_event_time)
     return next_event_time
 

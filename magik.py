@@ -45,13 +45,15 @@ if __name__ == "__main__":
                 if DEBUG:
                     print("Finished setting link of", subject, link_type, "to", link)
 
-        elif command in ["w","watch"]:
-            try:
-                while True:
-                    open_next_link()
-            except KeyboardInterrupt as e:
-                print("Exiting watch mode {}".format(str(e)))
 
+        elif command in ["open-next", "on"]:
+            open_event_link(reverse_time=False)
+
+        elif command in ["open-prev", "op"]:
+            open_event_link(reverse_time=True)
+
+        elif command in ["w","watch"]:
+            watch_mode()
 
         elif command in ["help", "h"]:
             print(HELP_TEXT)

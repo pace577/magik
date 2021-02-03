@@ -33,6 +33,59 @@ Alternatively, you can use the ~set~ command to add links to =LINK_FILE=. For ex
 #+end_src
 
 
+** Quickly opening links
+When =LINK_FILE= and =TIME_FILE= is prepared, you can use ~open-next~ or ~open-prev~ commands to open links immediately, to the next and previous classes respectively.
+
+Consider the following example files that has the following contents:
+
+~links.csv~
+#+begin_src csv
+subject,live_lectures,recorded_lectures,assignments
+ps,https:archlinux.org https://duckduckgo.com,https:archlinux.org,https:archlinux.org
+cv,https:archlinux.org,https:archlinux.org,https:archlinux.org
+math,https:archlinux.org,https:archlinux.org,https:archlinux.org
+#+end_src
+
+~times.csv~
+#+begin_src csv
+Day,09:00,10:00,11:00,12:00,14:00
+Mon,cv,,,,
+Tue,,,,math,
+Wed,,,,,ps
+Thu,,math,,cv,
+Fri,,,,,ps
+#+end_src
+
+If the current time is /Thu 10:05/ and you are late to the /math/ class, use the ~open-prev~ or ~op~ command to quickly open the link to math class.
+#+begin_src bash
+./magik.py op
+#+end_src
+
+If you're too paranoid about being late to the 12:00 class and you want to open the link right now, use the ~open-next~ or ~on~ command.
+#+begin_src bash
+./magik.py on
+#+end_src
+
+** Opening links manually
+You can open different kind of links manually, as given in the =LINK_FILE=. Note that this does not require the =TIME_FILE=.
+
+To open the link corresponding to ~ps~ and ~live_lectures~, use the following command while in the project directory:
+#+begin_src bash
+./magik.py open cv live_lectures
+#+end_src
+
+You can use short commands to do the same thing, which can be customized in the ~vars.py~ file.
+#+begin_src bash
+./magik.py o cv live
+#+end_src
+The default value for the last argument is ~live_lectures~ (in particular, it is the heading of the leftmost column containing links), so it can be skipped if desired.
+
+Note that the ~live_lectures~ column in ~ps~ row has 2 space separated links. You can open the desired link by specifying the link number using a '-'. For example, if you want to open the 1st link for ~ps~:
+#+begin_src csv
+./magik.py o ps-1 live
+#+end_src
+
+
 ** Watch mode
 Magik can read a timetable and open links by itself at a set time. The links opened correspond to the second column of the specified subject, as given in =LINK_FILE=. If you know at what times in the future you have to open a link, Magik can open it without you having to explicitly run it every time you need to open a link.
 
@@ -55,32 +108,6 @@ Start watch mode with the following. Kill the program to exit it.
 #+end_src
 
 Consider creating a Systemd service for Magik for autostarting it every time you boot your device.
-
-
-** Opening links
-When the CSV file is ready, you can use ~magik~ to open a link immediately. Consider the ~links.csv~ file for example. It has the following contents:
-#+begin_src csv
-subject,live_lectures,recorded_lectures,assignments
-ps,https:archlinux.org https://duckduckgo.com,https:archlinux.org,https:archlinux.org
-cv,https:archlinux.org,https:archlinux.org,https:archlinux.org
-math,https:archlinux.org,https:archlinux.org,https:archlinux.org
-#+end_src
-
-To open the link corresponding to ~ps~ and ~live_lectures~, use the following command while in the project directory:
-#+begin_src bash
-./magik.py open cv live_lectures
-#+end_src
-
-You can use short commands to do the same thing, which can be customized in the ~vars.py~ file.
-#+begin_src bash
-./magik.py o cv live
-#+end_src
-The default value for the last argument is ~live_lectures~ (in particular, it is the heading of the leftmost column containing links), so it can be skipped if desired.
-
-Note that the ~live_lectures~ column in ~ps~ row has 2 space separated links. You can open the desired link by specifying the link number using a '-'. For example, if you want to open the 1st link for ~ps~:
-#+begin_src csv
-./magik.py o ps-1 live
-#+end_src
 
 
 
