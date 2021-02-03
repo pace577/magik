@@ -144,12 +144,16 @@ def watch_mode():
 def open_event_link(reverse_time: bool = False):
     """Checks what the next event is in TIME_FILE, waits until it's time for the
     event and opens the link after waiting."""
+    if reverse_time:
+        global DAY_LIST, TIME_LIST
+        DAY_LIST = DAY_LIST[::-1]
+        TIME_LIST = TIME_LIST[::-1]
     next_event_time = get_event_time(reverse_time)
     if DEBUG:
         if reverse_time:
-            print("open_event_link: Will open the next event from now")
+            print("open_event_link: reverse_time is True. Will open previous event")
         else:
-            print("open_event_link: Will open the previous event from now")
+            print("open_event_link: reverse_time is False. Will open next event")
         print("open_event_link: The next event is on", next_event_time)
     time_file_entry = read_time_file_entry(next_event_time)
     if DEBUG and time_file_entry == "":
@@ -175,19 +179,15 @@ def compare_times(entry_time: int, given_time: int, reverse_time: bool = False) 
 def get_event_time_from_given_time(given_time: DateType, reverse_time: bool = False) -> DateType:
     """Returns next event time from given time. Reads only TIME_LIST, does not
     read TIME_FILE .Given time input format is ["%a","%R"]"""
-    global DAY_LIST, TIME_LIST
     given_day = given_time[0]
     given_hour, given_minute = map(int, given_time[1].split(":"))
-    if reverse_time:
-        DAY_LIST = DAY_LIST[::-1]
-        TIME_LIST = TIME_LIST[::-1]
 
     if given_day in DAY_LIST:
         for time_entry in TIME_LIST:
             entry_hour, entry_minute = map(int, time_entry.split(":"))
             if compare_times(entry_hour, given_hour, reverse_time):
                 if DEBUG:
-                    print(f"get_event_time_from_given_time: {given_time} The event might be today!")
+                    print(f"get_event_time_from_given_time: {given_time} The event might be today {time_entry}!")
                 return [given_day, time_entry]
             elif entry_hour == given_hour and compare_times(entry_minute, given_minute, reverse_time):
                 if DEBUG:
