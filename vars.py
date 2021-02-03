@@ -2,7 +2,7 @@
 
 import platform
 
-## Customization variables
+#--- Customization variables ---#
 
 BROWSER = "firefox" # used to execute shell command to open links
 LINK_FILE = "links.csv"
@@ -30,11 +30,18 @@ DAY_LIST = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 # Magik opens the link EARLY seconds prior to the event time
 EARLY = 300
 
+#--- End of Customization Variables ---#
+#--- Don't modify anything beyond this, unless you know what you're doing ---#
 
-## Other
+
+#--- Other ---#
 
 DEBUG = True
 DateType = list[str, str] #type alias
+
+# Adding SUBJECT_LIST to SUBJECT_ARGS_LIST to avoid repetition
+for i in range(len(SUBJECT_LIST)):
+    SUBJECT_ARGS_LIST[i] = [SUBJECT_LIST[i]] + SUBJECT_ARGS_LIST[i]
 
 # Use start to run commands from windows console
 if platform.system() == "Windows":
@@ -42,7 +49,8 @@ if platform.system() == "Windows":
 else:
     BROWSER_COMMAND = BROWSER
 
-## Help text
+
+#--- Help text ---#
 USAGE_TEXT = """
 Usage:
     ./magik.py [COMMAND] [SUBJECT] [LINK_TYPE] [LINK]
