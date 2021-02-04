@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import platform
 
 #--- Customization variables ---#
@@ -48,6 +49,10 @@ if platform.system() == "Windows":
     BROWSER_COMMAND = "start "+BROWSER
 else:
     BROWSER_COMMAND = BROWSER
+
+# Put absolute path for LINK_FILE and TIME_FILE
+LINK_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), LINK_FILE)
+TIME_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), TIME_FILE)
 
 
 #--- Help text ---#
