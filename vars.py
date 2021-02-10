@@ -15,10 +15,10 @@ SUBJECT = "subject" # For LINK_FILE
 DAY = "Day" # For TIME_FILE
 
 # Link types (LINK_FILE headings for columns containing links)
-LINK_TYPE_LIST = ["live_lectures", "recorded_lectures", "assignments"]
-LINK_TYPE_ARGS_LIST = [["live_lectures", "lecture", "live", "l", "zoom"],
-                       ["recorded_lectures", "recorded", "r"],
-                       ["assignments", "assignment", "a"]]
+LINK_TYPE_LIST = ["live_lectures", "recorded_lectures", "assignments"] #must match the entry in csv file
+LINK_TYPE_ARGS_LIST = [["lecture", "live", "l", "zoom"],
+                       ["recorded", "r"],
+                       ["assignment", "a"]] #can enter any of these in the command line
 
 # Subject names (LINK_FILE first column rows)
 SUBJECT_LIST = ["ps", "cv", "math"] #must match the entry in csv file
@@ -43,6 +43,10 @@ DateType = list[str, str] #type alias
 # Adding SUBJECT_LIST to SUBJECT_ARGS_LIST to avoid repetition
 for i in range(len(SUBJECT_LIST)):
     SUBJECT_ARGS_LIST[i] = [SUBJECT_LIST[i]] + SUBJECT_ARGS_LIST[i]
+
+# Adding LINK_TYPE_LIST to LINK_TYPE_ARGS_LIST to avoid repetition
+for i in range(len(LINK_TYPE_LIST)):
+    LINK_TYPE_ARGS_LIST[i] = [LINK_TYPE_LIST[i]] + LINK_TYPE_ARGS_LIST[i]
 
 # Use start to run commands from windows console
 if platform.system() == "Windows":
